@@ -2,28 +2,34 @@ let firstNumber;
 let secondNumber;
 let operator;
 let inputArr = [];
-const operators = ["+", "-", "*", "/"];
+const screen = document.querySelector('#screen');
 
 function add(x, y) {
     sum = x + y;
+    clearScreen();
     printToScreen(sum);
 }
 
 function subtract(x, y) {
-    return x - y;
+    difference = x - y;
+    clearScreen();
+    printToScreen(difference);
 }
 
 function multiply(x, y) {
-    return x * y;
+    product = x * y;
+    clearScreen();
+    printToScreen(product);
 }
 
 function divide(x, y) {
-    return x / y;
+    quotient = x / y;
+    clearScreen();
+    printToScreen(quotient);
 }
 
+// executes function based on operator
 function operate(operator, x, y) {
-    console.log("operating...");
-    console.log(x + operator + y);
     switch(operator) {
         case "+":
             add(firstNumber, secondNumber);
@@ -45,6 +51,13 @@ buttons.forEach((button) => {
         button.addEventListener('click', printToScreen);
 });
 
+function clearScreen() {
+    screen.textContent = '';
+    inputArr = [];
+    firstNumber;
+    secondNumber;
+}
+
 // triggered with every button press
 function printToScreen(text) {
     // this bit here is to allow me to use the function for an event listener, or on its own
@@ -55,15 +68,32 @@ function printToScreen(text) {
     } else {
         value = text;
     }
-    // define the screen selector
-    const screen = document.querySelector('#screen');
+
+
+
+    // don't print
+    const doNotPrint = ["AC", "DEL", "="]
+
+    if (!doNotPrint.includes(value)) {
     screen.textContent += value; 
-    if (value !== "=") {
     inputArr.push(value);
+    } else if (value === "AC") {
+        clearScreen();
+    } else if (value === "DEL") {
+        inputArr.pop();
+        screen.textContent = inputArr.join('');
+        console.log(inputArr.join(''));
+    } else if (value === "=") {
+        secondNumber = parseInt(inputArr.join(''));
+        operate(operator, firstNumber, secondNumber);
     }
-    console.log(inputArr);
+
+
+
+    //console.log(inputArr);
     // e.target.textContent contains an operator
     // aka check for +, -, x, /
+    const operators = ["+", "-", "*", "/"];
     const hasOperator = inputArr.some(item => operators.includes(item));
     // check inputArr for an operator
     if (hasOperator) {
@@ -71,17 +101,12 @@ function printToScreen(text) {
         // remove operator from array, store it
         operator = inputArr.pop();
         // join array, store it as firstNumber
-        firstNumber = parseInt(inputArr.join());
+        firstNumber = parseInt(inputArr.join(''));
         // clear array
         inputArr = [];
         //console.log(firstNumber + " " + operator + " ...tbd");
     }
-    // when = is pressed...
-    if (value === "=") {
-        // join the second number, store it
-        secondNumber = parseInt(inputArr.join());
-        operate(operator, firstNumber, secondNumber);
-    }
+
 
     }
     
