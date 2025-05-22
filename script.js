@@ -48,7 +48,7 @@ function operate(operator, x, y) {
 
 const buttons = document.querySelectorAll('#buttons button');
 buttons.forEach((button) => {
-    button.addEventListener('click', printToScreen);
+    button.addEventListener('click', (e) => handleButtonClick(e));
 });
 
 function clearScreen() {
@@ -58,51 +58,38 @@ function clearScreen() {
     secondNumber = undefined;
 }
 
-// triggered with every button press
-function printToScreen(text) {
-    //console.log(inputArr);
-    // this bit here is to allow me to use the function for an event listener, or on its own
-    let value;
-    // check if the argument is an event object
-    if (text && text.target) {
-        value = text.target.textContent;
-    } else {
-        value = text;
-    }
 
+function handleButtonClick(event) {
+    const value = event.target.textContent;
 
-
-    // don't print
-    const doNotPrint = ["AC", "DEL", "="]
-
-    if (!doNotPrint.includes(value)) {
-    screen.textContent += value; 
-    //console.log("Pushing to arr!");
-    inputArr.push(value);
-    } else if (value === "AC") {
+    if (value === "AC") {
         clearScreen();
     } else if (value === "DEL") {
         inputArr.pop();
         screen.textContent = inputArr.join('');
-        //console.log(inputArr.join(''));
     } else if (value === "=") {
-        if (isNaN(firstNumber)) {
-            firstNumber = parseInt(inputArr.join(''));
-        }
-        //console.log(inputArr);
-        //console.log('(donotprint) First is ' + firstNumber);
-        //console.log('(donotprint) Second is ' + secondNumber);
-        //console.log('(donotprint) Operator is ' + operator);
         secondNumber = parseInt(inputArr.join(''));
         operate(operator, firstNumber, secondNumber);
-        console.log(inputArr);
+    } else {
+        printToScreen(value);
+        handleOperators();
     }
 
-    handleOperators();
+}
 
+// triggered with every button press
+function printToScreen(text) {
+    // if coming from an event
+    if (text.target) {
+        text = text.target.textContent;
+    }
+    // don't print
+    const doNotPrint = ["AC", "DEL", "="]
 
+    if (doNotPrint.includes(text)) return;
 
-    
+    screen.textContent += text;
+    inputArr.push(text);
     }
     
     function handleOperators() {
