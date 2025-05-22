@@ -89,6 +89,7 @@ function handleButtonClick(event) {
 
     if (value === "AC") {
         clearScreen();
+        inputArr = [];
     } else if (value === "DEL") {
         inputArr.pop();
         screen.textContent = inputArr.join('');
