@@ -3,32 +3,32 @@ let secondNumber;
 let operator;
 let inputArr = [];
 const screen = document.querySelector('#screen');
+const operators = ["+", "-", "*", "/"];
 
 function add(x, y) {
     const sum = x + y;
-    clearScreen();
-    printToScreen(sum);
+    screen.textContent = sum;
+    firstNumber = sum;
 }
 
 function subtract(x, y) {
     const difference = x - y;
-    clearScreen();
-    printToScreen(difference);
+    screen.textContent = difference;
+    firstNumber = difference;
 }
 
 function multiply(x, y) {
     const product = x * y;
-    clearScreen();
-    printToScreen(product);
+    screen.textContent = product;
+    firstNumber = product;
 }
 
 function divide(x, y) {
     const quotient = x / y;
-    clearScreen();
-    printToScreen(quotient);
+    screen.textContent = quotient;
+    firstNumber = quotient;
 }
 
-// executes function based on operator
 function operate(operator, x, y) {
     switch(operator) {
         case "+":
@@ -46,14 +46,20 @@ function operate(operator, x, y) {
     }
 }
 
-const buttons = document.querySelectorAll('#buttons button');
-buttons.forEach((button) => {
-    button.addEventListener('click', (e) => handleButtonClick(e));
-});
+function printToScreen(text) {
+    // if coming from an event
+    if (text.target) {
+        text = text.target.textContent;
+    }
 
+    const doNotPrint = ["AC", "DEL", "="]
+    if (doNotPrint.includes(text)) return;
+
+    screen.textContent += text;
+    }
+    
 function clearScreen() {
     screen.textContent = '';
-    inputArr = [];
     firstNumber = undefined;
     secondNumber = undefined;
 }
@@ -61,6 +67,7 @@ function clearScreen() {
 
 function handleButtonClick(event) {
     const value = event.target.textContent;
+    
 
     if (value === "AC") {
         clearScreen();
@@ -68,48 +75,45 @@ function handleButtonClick(event) {
         inputArr.pop();
         screen.textContent = inputArr.join('');
     } else if (value === "=") {
-        secondNumber = parseInt(inputArr.join(''));
-        operate(operator, firstNumber, secondNumber);
+        if (operator && firstNumber !== undefined) {
+            secondNumber = parseInt(inputArr.join(''));
+            operate(operator, firstNumber, secondNumber);
+        }
     } else {
-        printToScreen(value);
-        handleOperators();
+    // only add to inputArr if it's a number
+    if (!operators.includes(value)) {
+        inputArr.push(value);
     }
-
+    printToScreen(value);
+    
+    if (operators.includes(value)) {
+        handleOperators(value); // pass the operator
+    }
+}
+    
 }
 
-// triggered with every button press
-function printToScreen(text) {
-    // if coming from an event
-    if (text.target) {
-        text = text.target.textContent;
-    }
-    // don't print
-    const doNotPrint = ["AC", "DEL", "="]
-
-    if (doNotPrint.includes(text)) return;
-
-    screen.textContent += text;
-    inputArr.push(text);
-    }
     
-    function handleOperators() {
-    // check for operators
-    const operators = ["+", "-", "*", "/"];
-    const hasOperator = inputArr.some(item => operators.includes(item));
-
-    if (hasOperator) {
-
-        // if we don't have a firstNumber, remove the
-        // operator and assign what's left to the variable
-        if (firstNumber === undefined) {
-            operator = inputArr.pop();
-            firstNumber = parseInt(inputArr.join(''));
-        } else {
-        // if we already have a firstNumber, just remove the operator
-            operator = inputArr.pop();
-        }
-
+function handleOperators(newOperator) {
+    if (firstNumber === undefined) {
+        // first operator case
+        operator = newOperator;
+        firstNumber = parseFloat(inputArr.join(''));
         inputArr = [];
-        //console.log(firstNumber + " " + operator + " ...tbd");
-        }
+    } else {
+        // subsequent operator - calculate first
+        const nextNumber = parseFloat(inputArr.join(''));
+        operate(operator, firstNumber, nextNumber);
+        
+        // update state without clearing screen
+        firstNumber = parseFloat(screen.textContent);
+        operator = newOperator;
+        inputArr = [];
+        printToScreen(operator);
     }
+}
+
+const buttons = document.querySelectorAll('#buttons button');
+buttons.forEach((button) => {
+    button.addEventListener('click', (e) => handleButtonClick(e));
+});
