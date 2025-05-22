@@ -54,10 +54,26 @@ function printToScreen(text) {
         text = text.target.textContent;
     }
 
+    // check for double operators
+    const currentScreenText = screen.textContent;
+    const lastChar = currentScreenText.slice(-1);
+
     const doNotPrint = ["AC", "DEL", "="]
     if (doNotPrint.includes(text)) return;
 
-    screen.textContent += text;
+    
+    if (operators.includes(text)) {
+        // if the last character is an operator, replace it with the newest one
+        if (operators.includes(lastChar)) {
+            screen.textContent = currentScreenText.slice(0, -1) + text;
+        } else {
+            // otherwise, append the operator normally
+            screen.textContent += text;
+        }
+    } else {
+        // for numbers, append normally
+        screen.textContent += text;
+    }
     }
     
 function clearScreen() {
@@ -97,6 +113,11 @@ function handleButtonClick(event) {
 
     
 function handleOperators(newOperator) {
+    // error handling 
+    if (operator && inputArr.length === 0) {
+        operator = newOperator;
+        return;
+    }
     if (firstNumber === undefined) {
         // first operator case
         operator = newOperator;
