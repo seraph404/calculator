@@ -24,10 +24,12 @@ function multiply(x, y) {
 }
 
 function divide(x, y) {
-    const quotient = x / y;
+    let quotient = x / y;
+    quotient = Number.parseFloat(quotient).toFixed(10); // round to 10 decimals
     screen.textContent = quotient;
     firstNumber = quotient;
 }
+
 
 function operate(operator, x, y) {
     switch(operator) {
