@@ -85,7 +85,6 @@ function clearScreen() {
 
 function handleButtonClick(event) {
     const value = event.target.textContent;
-    
 
     if (value === "AC") {
         clearScreen();
@@ -93,6 +92,8 @@ function handleButtonClick(event) {
     } else if (value === "DEL") {
         inputArr.pop();
         screen.textContent = inputArr.join('');
+    } else if (value === "%") {
+        // logic
     } else if (value === "=") {
         if (operator && firstNumber !== undefined) {
             secondNumber = parseInt(inputArr.join(''));
@@ -111,7 +112,6 @@ function handleButtonClick(event) {
 }
     
 }
-
     
 function handleOperators(newOperator) {
     // error handling 
