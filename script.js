@@ -5,25 +5,25 @@ let inputArr = [];
 const screen = document.querySelector('#screen');
 
 function add(x, y) {
-    sum = x + y;
+    const sum = x + y;
     clearScreen();
     printToScreen(sum);
 }
 
 function subtract(x, y) {
-    difference = x - y;
+    const difference = x - y;
     clearScreen();
     printToScreen(difference);
 }
 
 function multiply(x, y) {
-    product = x * y;
+    const product = x * y;
     clearScreen();
     printToScreen(product);
 }
 
 function divide(x, y) {
-    quotient = x / y;
+    const quotient = x / y;
     clearScreen();
     printToScreen(quotient);
 }
