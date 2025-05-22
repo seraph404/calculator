@@ -32,34 +32,35 @@ function divide(x, y) {
 function operate(operator, x, y) {
     switch(operator) {
         case "+":
-            add(firstNumber, secondNumber);
+            add(x, y);
             break;
         case "-":
-            subtract(firstNumber, secondNumber);
+            subtract(x, y);
             break;
         case "*":
-            multiply(firstNumber, secondNumber);
+            multiply(x, y);
             break;
         case "/":
-            divide(firstNumber, secondNumber);
+            divide(x, y);
             break;
     }
 }
 
 const buttons = document.querySelectorAll('#buttons button');
 buttons.forEach((button) => {
-        button.addEventListener('click', printToScreen);
+    button.addEventListener('click', printToScreen);
 });
 
 function clearScreen() {
     screen.textContent = '';
     inputArr = [];
-    firstNumber;
-    secondNumber;
+    firstNumber = undefined;
+    secondNumber = undefined;
 }
 
 // triggered with every button press
 function printToScreen(text) {
+    //console.log(inputArr);
     // this bit here is to allow me to use the function for an event listener, or on its own
     let value;
     // check if the argument is an event object
@@ -76,37 +77,52 @@ function printToScreen(text) {
 
     if (!doNotPrint.includes(value)) {
     screen.textContent += value; 
+    //console.log("Pushing to arr!");
     inputArr.push(value);
     } else if (value === "AC") {
         clearScreen();
     } else if (value === "DEL") {
         inputArr.pop();
         screen.textContent = inputArr.join('');
-        console.log(inputArr.join(''));
+        //console.log(inputArr.join(''));
     } else if (value === "=") {
+        if (isNaN(firstNumber)) {
+            firstNumber = parseInt(inputArr.join(''));
+        }
+        //console.log(inputArr);
+        //console.log('(donotprint) First is ' + firstNumber);
+        //console.log('(donotprint) Second is ' + secondNumber);
+        //console.log('(donotprint) Operator is ' + operator);
         secondNumber = parseInt(inputArr.join(''));
         operate(operator, firstNumber, secondNumber);
+        console.log(inputArr);
     }
 
+    handleOperators();
 
 
-    //console.log(inputArr);
-    // e.target.textContent contains an operator
-    // aka check for +, -, x, /
-    const operators = ["+", "-", "*", "/"];
-    const hasOperator = inputArr.some(item => operators.includes(item));
-    // check inputArr for an operator
-    if (hasOperator) {
-        console.log("Operator discovered!");
-        // remove operator from array, store it
-        operator = inputArr.pop();
-        // join array, store it as firstNumber
-        firstNumber = parseInt(inputArr.join(''));
-        // clear array
-        inputArr = [];
-        //console.log(firstNumber + " " + operator + " ...tbd");
-    }
 
-
+    
     }
     
+    function handleOperators() {
+    // check for operators
+    const operators = ["+", "-", "*", "/"];
+    const hasOperator = inputArr.some(item => operators.includes(item));
+
+    if (hasOperator) {
+
+        // if we don't have a firstNumber, remove the
+        // operator and assign what's left to the variable
+        if (firstNumber === undefined) {
+            operator = inputArr.pop();
+            firstNumber = parseInt(inputArr.join(''));
+        } else {
+        // if we already have a firstNumber, just remove the operator
+            operator = inputArr.pop();
+        }
+
+        inputArr = [];
+        //console.log(firstNumber + " " + operator + " ...tbd");
+        }
+    }
